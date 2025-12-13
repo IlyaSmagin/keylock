@@ -20,9 +20,10 @@ def format_keys(keys):
     formatted_keys = " + ".join(pressed_keys_names)
     return formatted_keys
 
-def on_press(key):
+def on_press(key): #clear pressed_keys on slop_listener (cleanup)
     pressed_keys.add(key)
     print("You pressed:", format_keys(pressed_keys))
+    api.display_pressed_keys(format_keys(pressed_keys))
     if all(k in pressed_keys for k in escape_keys):
         stop_listener()
 
@@ -60,6 +61,11 @@ class Api:
 
     def stop(self):
         return stop_listener()
+
+    def display_pressed_keys(self, keys_string):
+        global window
+        if window:
+            window.evaluate_js(f'update_pressed_keys("{keys_string}")')
 
 if __name__ == "__main__":
     api = Api()

@@ -2,10 +2,14 @@
 body {
   margin: 48px auto;
   background: #f5f5f5;
+  color: #333333;
 }
 h1 {
-  color: #333333;
   text-align: center;
+}
+#currentlyPressed {
+  text-align: center;
+  font-size: 14px;
 }
 #controls {
   margin: 0px auto;
