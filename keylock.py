@@ -24,7 +24,7 @@ def on_press(key):
     pressed_keys.add(key)
     print("You pressed:", format_keys(pressed_keys))
     if all(k in pressed_keys for k in escape_keys):
-        return False
+        stop_listener()
 
 def on_release(key):
     if key in pressed_keys:
