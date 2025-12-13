@@ -1,9 +1,14 @@
 from pynput import keyboard
+import webview
+import os
 
 # keyboard.Key.ctrl_l
 # keyboard.KeyCode.from_char("q")
+# https://pynput.readthedocs.io/en/latest/keyboard.html
 escape_keys = {keyboard.Key.esc}
 pressed_keys = set()
+listener = None
+listener_running = False
 
 def format_keys(keys):
     pressed_keys_names = []
@@ -25,7 +30,40 @@ def on_release(key):
     if key in pressed_keys:
         pressed_keys.remove(key)
 
-with keyboard.Listener(on_press=on_press, on_release=on_release, suppress=True) as listener:
-    print("Keyboard is locked, press " + format_keys(escape_keys) + " to remove the lock!")
-    listener.join()  # Will block until listener is stopped by returning False
-    print("Escape character detected (" + format_keys(escape_keys) + "), exiting...")
+def start_listener():
+    global listener, listener_running
+    if listener_running:
+        return "already running"
+    listener_running = True
+    listener = keyboard.Listener(on_press=on_press, on_release=on_release, suppress=True)
+    listener.start()
+    print("Listener started")
+    return "started"
+
+def stop_listener():
+    global listener, listener_running
+    if listener is not None:
+        listener.stop()
+        listener_running = False
+        print("Listener stopped")
+        return "stopped"
+    print("Listener not running")
+    return "not running"
+
+def on_closing():
+    print("Window is closing, stopping listener...")
+    stop_listener()
+
+class Api:
+    def start(self):
+        return start_listener()
+
+    def stop(self):
+        return stop_listener()
+
+if __name__ == "__main__":
+    api = Api()
+    html_file = os.path.join(os.path.dirname(__file__), "index.html");
+    window = webview.create_window("Leylock", url=html_file, js_api=api)
+    window.events.closing += on_closing
+    webview.start()
