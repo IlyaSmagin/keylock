@@ -20,11 +20,11 @@ def format_keys(keys):
     formatted_keys = " + ".join(pressed_keys_names)
     return formatted_keys
 
-def on_press(key): #clear pressed_keys on slop_listener (cleanup)
+def on_press(key):
     pressed_keys.add(key)
     print("You pressed:", format_keys(pressed_keys))
     api.display_pressed_keys(format_keys(pressed_keys))
-    if all(k in pressed_keys for k in escape_keys):
+    if (escape_keys.issubset(pressed_keys)):
         stop_listener()
 
 def on_release(key):
@@ -45,6 +45,7 @@ def stop_listener():
     global listener, listener_running
     if listener is not None:
         listener.stop()
+        pressed_keys.clear()
         listener_running = False
         print("Listener stopped")
         return "stopped"
