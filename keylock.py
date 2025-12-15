@@ -25,7 +25,7 @@ def on_press(key):
     print("You pressed:", format_keys(pressed_keys))
     api.display_pressed_keys(format_keys(pressed_keys))
     if (escape_keys.issubset(pressed_keys)):
-        stop_listener()
+        api.stop_from_backend()
 
 def on_release(key):
     if key in pressed_keys:
@@ -62,6 +62,12 @@ class Api:
 
     def stop(self):
         return stop_listener()
+
+    def stop_from_backend(self):
+        # goes to js and back which is prob not effective or clean
+        global window
+        if window:
+            window.evaluate_js("stop()")
 
     def display_pressed_keys(self, keys_string):
         global window
