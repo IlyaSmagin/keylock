@@ -15,8 +15,10 @@ def format_keys(keys):
     for key in keys:
         if hasattr(key, "char") and key.char:
             pressed_keys_names.append(key.char)
-        else:
+        elif (hasattr(key, "name")):
             pressed_keys_names.append(key.name)
+        else:
+            pressed_keys_names.append("unknown key")
     formatted_keys = " + ".join(pressed_keys_names)
     return formatted_keys
 
@@ -29,6 +31,7 @@ def on_press(key):
 
 def on_release(key):
     if key in pressed_keys:
+        api.display_pressed_keys(format_keys([key]))
         pressed_keys.remove(key)
 
 def start_listener():
@@ -77,6 +80,6 @@ class Api:
 if __name__ == "__main__":
     api = Api()
     html_file = os.path.join(os.path.dirname(__file__), "index.html");
-    window = webview.create_window("Leylock", url=html_file, js_api=api)
+    window = webview.create_window("Keylock", url=html_file, js_api=api)
     window.events.closing += on_closing
     webview.start()
