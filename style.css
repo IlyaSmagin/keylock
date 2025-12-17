@@ -56,7 +56,7 @@ h1 {
   cursor: pointer;
 }
 
-.key:active {
+.key-active {
 	background-color: #d1d1d1;
 	box-shadow: inset 0 -1px var(--key-shadow);
 }
