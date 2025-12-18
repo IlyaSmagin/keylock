@@ -1,6 +1,7 @@
 from pynput import keyboard
 import webview
 import os
+import json
 
 # keyboard.Key.ctrl_l
 # keyboard.KeyCode.from_char("q")
@@ -72,10 +73,14 @@ class Api:
         if window:
             window.evaluate_js("stop()")
 
+    def console(self, keys_string):
+        print(keys_string)
+
     def display_pressed_keys(self, keys_string):
         global window
         if window:
-            window.evaluate_js(f'update_pressed_keys("{keys_string}")')
+            js_arg = json.dumps(keys_string)
+            window.evaluate_js(f'update_pressed_keys({js_arg})')
 
 if __name__ == "__main__":
     api = Api()
