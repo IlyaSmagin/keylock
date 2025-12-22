@@ -25,6 +25,22 @@ async function update_pressed_keys(keys_string){
         triggeredClass.classList.toggle("key-active"))
   });
   }
+async function update_keys_on_press(keys_string) {
+  keys_string.split(" + ").map(key => {
+    key = CSS.escape(key);
+    document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`).
+      forEach(triggeredClass =>
+        triggeredClass.classList.add("key-active"))
+  });
+}
+async function update_keys_on_release(keys_string) {
+  keys_string.split(" + ").map(key => {
+    key = CSS.escape(key);
+    document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`).
+      forEach(triggeredClass =>
+        triggeredClass.classList.remove("key-active"))
+  });
+}
 
 document.getElementById("startBtn").addEventListener("click", start);
 document.getElementById("stopBtn").addEventListener("click", stop);
