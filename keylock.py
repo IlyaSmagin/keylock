@@ -29,6 +29,7 @@ def on_press(key):
     #as listener stops immediatly after add some delay to display that escape keys were pressed
     api.update_keys_on_press(format_keys(pressed_keys))
     if (escape_keys.issubset(pressed_keys)):
+        api.update_keys_on_release(format_keys(pressed_keys))
         api.stop_from_backend()
 
 def on_release(key):
@@ -81,15 +82,15 @@ class Api:
 
     def console(self, keys_string):
         print(keys_string)
-        
+
     # remove duplication
-    def render_keys_on_press(self, keys_string):
+    def update_keys_on_press(self, keys_string):
         global window
         if window:
             js_arg = json.dumps(keys_string)
-            window.evaluate_js(f'render_keys_on_press({js_arg})')
+            window.evaluate_js(f'update_keys_on_press({js_arg})')
 
-    def render_keys_on_release(self, keys_string):
+    def update_keys_on_release(self, keys_string):
         global window
         if window:
             js_arg = json.dumps(keys_string)
