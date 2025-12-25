@@ -26,6 +26,7 @@ def format_keys(keys):
 def on_press(key):
     pressed_keys.add(key)
     print("You pressed:", format_keys(pressed_keys))
+    #as listener stops immediatly after add some delay to display that escape keys were pressed
     api.update_keys_on_press(format_keys(pressed_keys))
     if (escape_keys.issubset(pressed_keys)):
         api.stop_from_backend()
@@ -80,13 +81,8 @@ class Api:
 
     def console(self, keys_string):
         print(keys_string)
-# remove duplication
-    def display_pressed_keys(self, keys_string):
-        global window
-        if window:
-            js_arg = json.dumps(keys_string)
-            window.evaluate_js(f'update_pressed_keys({js_arg})')
-
+        
+    # remove duplication
     def render_keys_on_press(self, keys_string):
         global window
         if window:

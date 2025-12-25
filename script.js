@@ -17,15 +17,9 @@ function set_pressed_keys_placeholder(string) {
 async function update_pressed_keys(keys_string){
   // let debug = await window.pywebview.api.console(keys_string);
   document.getElementById("lastPressed").innerText = "Last pressed key is " + keys_string;
-
-  keys_string.split(" + ").map(key => {
-    key = CSS.escape(key);
-    document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`).
-      forEach(triggeredClass =>
-        triggeredClass.classList.toggle("key-active"))
-  });
   }
 async function update_keys_on_press(keys_string) {
+  update_pressed_keys(keys_string);
   keys_string.split(" + ").map(key => {
     key = CSS.escape(key);
     document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`).
@@ -34,6 +28,7 @@ async function update_keys_on_press(keys_string) {
   });
 }
 async function update_keys_on_release(keys_string) {
+  update_pressed_keys(keys_string);
   keys_string.split(" + ").map(key => {
     key = CSS.escape(key);
     document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`).
