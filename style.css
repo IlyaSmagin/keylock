@@ -1,9 +1,12 @@
 :root {
   --key-shadow: #333333;
+  --key-escape: #ff9900;
 }
 * {
   box-sizing: border-box;
 }
+
+/* transparent bg? */
 
 body {
   margin: 48px auto;
@@ -64,6 +67,10 @@ h1 {
 .key-active {
 	background-color: #d1d1d1;
 	box-shadow: inset 0 -1px var(--key-shadow);
+}
+
+.key-escape {
+  border-color: var(--key-escape);
 }
 
 

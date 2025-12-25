@@ -6,7 +6,7 @@ import json
 # keyboard.Key.ctrl_l
 # keyboard.KeyCode.from_char("q")
 # https://pynput.readthedocs.io/en/latest/keyboard.html
-escape_keys = {keyboard.Key.esc}
+escape_keys = {keyboard.Key.esc, keyboard.KeyCode.from_char("m")}
 pressed_keys = set()
 listener = None
 listener_running = False
@@ -56,6 +56,11 @@ def stop_listener():
     print("Listener not running")
     return "not running"
 
+def on_starting():
+    global escape_keys
+    print("Window is opening...")
+    api.highlight_escape_keys(format_keys(escape_keys))
+
 def on_closing():
     print("Window is closing, stopping listener...")
     stop_listener()
@@ -94,10 +99,16 @@ class Api:
             js_arg = json.dumps(keys_string)
             window.evaluate_js(f'update_keys_on_release({js_arg})')
 
+    def highlight_escape_keys(self, keys_string):
+        global window
+        if window:
+            js_arg = json.dumps(keys_string)
+            window.evaluate_js(f'highlight_escape_keys({js_arg})')
+
 
 if __name__ == "__main__":
     api = Api()
     html_file = os.path.join(os.path.dirname(__file__), "index.html");
     window = webview.create_window("Keylock", url=html_file, js_api=api)
     window.events.closing += on_closing
-    webview.start()
+    webview.start(func=on_starting)

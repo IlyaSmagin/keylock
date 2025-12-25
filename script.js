@@ -41,6 +41,13 @@ async function update_keys_on_release(keys_string) {
         triggeredClass.classList.remove("key-active"))
   });
 }
+function highlight_escape_keys(keys_string) {
+  keys_string.split(" + ").map(escape_key => {
+    document.querySelectorAll(`kbd[data-key='${escape_key}'], kbd[data-alt='${escape_key}']`).
+      forEach(triggeredClass =>
+        triggeredClass.classList.add("key-escape"))
+  });
+}
 
 document.getElementById("startBtn").addEventListener("click", start);
 document.getElementById("stopBtn").addEventListener("click", stop);
