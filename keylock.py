@@ -106,6 +106,6 @@ class Api:
 if __name__ == "__main__":
     api = Api()
     html_file = os.path.join(os.path.dirname(__file__), "index.html");
-    window = webview.create_window("Keylock", url=html_file, js_api=api)
+    window = webview.create_window("Keylock", url=html_file, js_api=api, transparent=True)
     window.events.closing += on_closing
     webview.start(func=on_starting)
