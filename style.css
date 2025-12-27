@@ -56,6 +56,11 @@ h1 {
 	font-weight: 700;
 }
 
+.statusLocked {
+	border-color: var(--danger);
+	color: var(--danger);
+}
+
 .container {
 	padding: 0.75rem;
 	border: 1px solid var(--border);
@@ -150,7 +155,7 @@ h1 {
 	display: flex;
 	padding-top: 4px;
 	justify-content: center;
-	font-size: calc(100vw / 60); 
+	font-size: calc(100vw / 60);
   /* differentiate font size (chars are normal, special keys use smaller font)*/
 	transition: background-color 0.05s;
 	cursor: pointer;

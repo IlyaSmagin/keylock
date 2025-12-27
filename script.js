@@ -11,7 +11,9 @@ async function stop() {
 }
 
 function update_listener_status(status_string) {
-  document.getElementById("status").innerText = status_string;
+  const status = document.getElementById("status");
+  status.innerText = status_string;
+  status.classList.toggle("statusLocked");
 }
 
 function set_pressed_keys_placeholder(string) {
