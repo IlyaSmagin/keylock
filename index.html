@@ -1,144 +1,168 @@
 <!DOCYTYPE html>
-  <html>
+	<html>
 
-  <head>
-    <title>Keylock</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
+	<head>
+		<title>Keylock</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
 
-  <body>
-    <h1>Keylock <span id="status">is off</span></h1>
-    <p id="lastPressed">Not monitoring keys presses</p>
-    <div id="controls">
-      <button id="startBtn">Lock keyboard</button>
-      <button id="stopBtn">Unlock keyboard</button>
+	<body>
+		<header>
+			<h1>Keylock</h1>
+			<div class="statusContainer">
+				<span>status</span>
+				<span class="statusIndicator" id="status">unlocked</span>
+			</div>
+		</header>
+		<div class="controlsContainer" id="controls">
+			<button class="primaryButton" id="startBtn">Lock keyboard</button>
+			<button class="dangerButton" id="stopBtn">Unlock keyboard</button>
+			<div class="container">
+				<div class="containerHeader">
+					<span class="controlEscapeHeading">escape sequence:</span>
+					<button class="controlEscapeEdit">edit</button>
+				</div>
+				<div class="keySequence"><span class="key-escape">Esc</span>+<span class="key-escape">b</span></div>
+			</div>
+		</div>
+		<div class="container"><div class="containerHeader">
+			
+      <div id="lastPressed">Not monitoring keys presses</div>
+		</div>
+			<div class="keySequence">
+				<span class="key-active">a</span>+<span class="key-active">h</span>
+			</div>
     </div>
+		<div class="container">
+			<div class="containerHeader">
+				
+			<div >keyboard monitor</div>
+			</div>
+			<div class="keyboard">
 
+				<!-- Function Row -->
+				<div class="row">
+					<kbd class="key" data-key="esc">Esc</kbd>
+					<kbd class="key" data-key="f1">F1</kbd>
+					<kbd class="key" data-key="f2">F2</kbd>
+					<kbd class="key" data-key="f3">F3</kbd>
+					<kbd class="key" data-key="f4">F4</kbd>
+					<kbd class="key" data-key="f5">F5</kbd>
+					<kbd class="key" data-key="f6">F6</kbd>
+					<kbd class="key" data-key="f7">F7</kbd>
+					<kbd class="key" data-key="f8">F8</kbd>
+					<kbd class="key" data-key="f9">F9</kbd>
+					<kbd class="key" data-key="f10">F10</kbd>
+					<kbd class="key" data-key="f11">F11</kbd>
+					<kbd class="key" data-key="f12">F12</kbd>
+					<kbd class="key" data-key="delete">Del</kbd>
+					<kbd class="key" data-key="home">Home</kbd>
+					<kbd class="key" data-key="end">End</kbd>
+					<kbd class="key" data-key="page_up">PgUp</kbd>
+					<kbd class="key" data-key="page_down">PgDn</kbd>
+				</div>
 
-    <div class="keyboard">
+				<!-- Row 1 -->
+				<div class="row">
+					<kbd class="key" data-key="~">~</kbd>
+					<kbd class="key" data-key="1">1</kbd>
+					<kbd class="key" data-key="2">2</kbd>
+					<kbd class="key" data-key="3">3</kbd>
+					<kbd class="key" data-key="4">4</kbd>
+					<kbd class="key" data-key="5">5</kbd>
+					<kbd class="key" data-key="6">6</kbd>
+					<kbd class="key" data-key="7">7</kbd>
+					<kbd class="key" data-key="8">8</kbd>
+					<kbd class="key" data-key="9">9</kbd>
+					<kbd class="key" data-key="0">0</kbd>
+					<kbd class="key" data-key="-">-</kbd>
+					<kbd class="key" data-key="=">=</kbd>
+					<kbd class="key U2" data-key="backspace">Backspace</kbd>
+					<kbd class="key" data-key="num_lock">NumL</kbd>
+					<kbd class="key" data-key="+">+</kbd>
+					<kbd class="key" data-key="*">*</kbd>
+				</div>
 
-      <!-- Function Row -->
-      <div class="row">
-        <kbd class="key" data-key="esc">Esc</kbd>
-        <kbd class="key" data-key="f1">F1</kbd>
-        <kbd class="key" data-key="f2">F2</kbd>
-        <kbd class="key" data-key="f3">F3</kbd>
-        <kbd class="key" data-key="f4">F4</kbd>
-        <kbd class="key" data-key="f5">F5</kbd>
-        <kbd class="key" data-key="f6">F6</kbd>
-        <kbd class="key" data-key="f7">F7</kbd>
-        <kbd class="key" data-key="f8">F8</kbd>
-        <kbd class="key" data-key="f9">F9</kbd>
-        <kbd class="key" data-key="f10">F10</kbd>
-        <kbd class="key" data-key="f11">F11</kbd>
-        <kbd class="key" data-key="f12">F12</kbd>
-        <kbd class="key" data-key="delete">Del</kbd>
-        <kbd class="key" data-key="home">Home</kbd>
-        <kbd class="key" data-key="end">End</kbd>
-        <kbd class="key" data-key="page_up">PgUp</kbd>
-        <kbd class="key" data-key="page_down">PgDn</kbd>
-      </div>
+				<!-- Row 2 -->
+				<div class="row">
+					<kbd class="key U1-5" data-key="tab">Tab</kbd>
+					<kbd class="key" data-key="q">Q</kbd>
+					<kbd class="key" data-key="w">W</kbd>
+					<kbd class="key" data-key="e">E</kbd>
+					<kbd class="key" data-key="r">R</kbd>
+					<kbd class="key" data-key="t">T</kbd>
+					<kbd class="key" data-key="y">Y</kbd>
+					<kbd class="key" data-key="u">U</kbd>
+					<kbd class="key" data-key="i">I</kbd>
+					<kbd class="key" data-key="o">O</kbd>
+					<kbd class="key" data-key="p">P</kbd>
+					<kbd class="key" data-key="[">[</kbd>
+					<kbd class="key" data-key="]">]</kbd>
+					<kbd class="key U1-5" data-key="\">\</kbd>
+					<kbd class="key" data-key="7">7</kbd>
+					<kbd class="key" data-key="8">8</kbd>
+					<kbd class="key" data-key="9">9</kbd>
+				</div>
 
-      <!-- Row 1 -->
-      <div class="row">
-        <kbd class="key" data-key="~">~</kbd>
-        <kbd class="key" data-key="1">1</kbd>
-        <kbd class="key" data-key="2">2</kbd>
-        <kbd class="key" data-key="3">3</kbd>
-        <kbd class="key" data-key="4">4</kbd>
-        <kbd class="key" data-key="5">5</kbd>
-        <kbd class="key" data-key="6">6</kbd>
-        <kbd class="key" data-key="7">7</kbd>
-        <kbd class="key" data-key="8">8</kbd>
-        <kbd class="key" data-key="9">9</kbd>
-        <kbd class="key" data-key="0">0</kbd>
-        <kbd class="key" data-key="-">-</kbd>
-        <kbd class="key" data-key="=">=</kbd>
-        <kbd class="key U2" data-key="backspace">Backspace</kbd>
-        <kbd class="key" data-key="num_lock">NumL</kbd>
-        <kbd class="key" data-key="+">+</kbd>
-        <kbd class="key" data-key="*">*</kbd>
-      </div>
+				<!-- Row 3 -->
+				<div class="row">
+					<kbd class="key U1-75" data-key="caps_lock">Caps</kbd>
+					<kbd class="key" data-key="a">A</kbd>
+					<kbd class="key" data-key="s">S</kbd>
+					<kbd class="key" data-key="d">D</kbd>
+					<kbd class="key" data-key="f">F</kbd>
+					<kbd class="key" data-key="g">G</kbd>
+					<kbd class="key" data-key="h">H</kbd>
+					<kbd class="key" data-key="j">J</kbd>
+					<kbd class="key" data-key="k">K</kbd>
+					<kbd class="key" data-key="l">L</kbd>
+					<kbd class="key" data-key=";">;</kbd>
+					<kbd class="key" data-key="'">'</kbd>
+					<kbd class="key U2-25" data-key="enter">Enter</kbd>
+					<kbd class="key" data-key="4">4</kbd>
+					<kbd class="key" data-key="5">5</kbd>
+					<kbd class="key" data-key="6">6</kbd>
+				</div>
 
-      <!-- Row 2 -->
-      <div class="row">
-        <kbd class="key U1-5" data-key="tab">Tab</kbd>
-        <kbd class="key" data-key="q">Q</kbd>
-        <kbd class="key" data-key="w">W</kbd>
-        <kbd class="key" data-key="e">E</kbd>
-        <kbd class="key" data-key="r">R</kbd>
-        <kbd class="key" data-key="t">T</kbd>
-        <kbd class="key" data-key="y">Y</kbd>
-        <kbd class="key" data-key="u">U</kbd>
-        <kbd class="key" data-key="i">I</kbd>
-        <kbd class="key" data-key="o">O</kbd>
-        <kbd class="key" data-key="p">P</kbd>
-        <kbd class="key" data-key="[">[</kbd>
-        <kbd class="key" data-key="]">]</kbd>
-        <kbd class="key U1-5" data-key="\">\</kbd>
-        <kbd class="key" data-key="7">7</kbd>
-        <kbd class="key" data-key="8">8</kbd>
-        <kbd class="key" data-key="9">9</kbd>
-      </div>
+				<!-- Row 4 -->
+				<div class="row">
+					<kbd class="key U2-25" data-key="shift">Shift</kbd>
+					<kbd class="key" data-key="z">Z</kbd>
+					<kbd class="key" data-key="x">X</kbd>
+					<kbd class="key" data-key="c">C</kbd>
+					<kbd class="key" data-key="v">V</kbd>
+					<kbd class="key" data-key="b">B</kbd>
+					<kbd class="key" data-key="n">N</kbd>
+					<kbd class="key" data-key="m">M</kbd>
+					<kbd class="key" data-key=",">,</kbd>
+					<kbd class="key" data-key=".">.</kbd>
+					<kbd class="key" data-key="/">/</kbd>
+					<kbd class="key U1-75" data-key="shift_r">Shift</kbd>
+					<kbd class="key" data-key="up">Up</kbd>
+					<kbd class="key" data-key="1">1</kbd>
+					<kbd class="key" data-key="2">2</kbd>
+					<kbd class="key" data-key="3">3</kbd>
+				</div>
 
-      <!-- Row 3 -->
-      <div class="row">
-        <kbd class="key U1-75" data-key="caps_lock">Caps</kbd>
-        <kbd class="key" data-key="a">A</kbd>
-        <kbd class="key" data-key="s">S</kbd>
-        <kbd class="key" data-key="d">D</kbd>
-        <kbd class="key" data-key="f">F</kbd>
-        <kbd class="key" data-key="g">G</kbd>
-        <kbd class="key" data-key="h">H</kbd>
-        <kbd class="key" data-key="j">J</kbd>
-        <kbd class="key" data-key="k">K</kbd>
-        <kbd class="key" data-key="l">L</kbd>
-        <kbd class="key" data-key=";">;</kbd>
-        <kbd class="key" data-key="'">'</kbd>
-        <kbd class="key U2-25" data-key="enter">Enter</kbd>
-        <kbd class="key" data-key="4">4</kbd>
-        <kbd class="key" data-key="5">5</kbd>
-        <kbd class="key" data-key="6">6</kbd>
-      </div>
+				<!-- Row 5 -->
+				<div class="row">
+					<kbd class="key U1-25" data-key="ctrl">Ctrl</kbd>
+					<kbd class="key U1-25" data-key="super">Super</kbd>
+					<kbd class="key U1-25" data-key="alt">Alt</kbd>
+					<kbd class="key U6-75" data-key="space">Space</kbd>
+					<kbd class="key U1-25" data-key="alt_r">Alt</kbd>
+					<kbd class="key U1-25" data-key="ctrl_r">Ctrl</kbd>
+					<kbd class="key" data-key="left">Left</kbd>
+					<kbd class="key" data-key="down">Down</kbd>
+					<kbd class="key" data-key="right">Right</kbd>
+					<kbd class="key" data-key="0">0</kbd>
+					<kbd class="key" data-key="insert">Ins</kbd>
+				</div>
 
-      <!-- Row 4 -->
-      <div class="row">
-        <kbd class="key U2-25" data-key="shift">Shift</kbd>
-        <kbd class="key" data-key="z">Z</kbd>
-        <kbd class="key" data-key="x">X</kbd>
-        <kbd class="key" data-key="c">C</kbd>
-        <kbd class="key" data-key="v">V</kbd>
-        <kbd class="key" data-key="b">B</kbd>
-        <kbd class="key" data-key="n">N</kbd>
-        <kbd class="key" data-key="m">M</kbd>
-        <kbd class="key" data-key=",">,</kbd>
-        <kbd class="key" data-key=".">.</kbd>
-        <kbd class="key" data-key="/">/</kbd>
-        <kbd class="key U1-75" data-key="shift_r">Shift</kbd>
-        <kbd class="key" data-key="up">Up</kbd>
-        <kbd class="key" data-key="1">1</kbd>
-        <kbd class="key" data-key="2">2</kbd>
-        <kbd class="key" data-key="3">3</kbd>
-      </div>
+			</div>
+		</div>
 
-      <!-- Row 5 -->
-      <div class="row">
-        <kbd class="key U1-25" data-key="ctrl">Ctrl</kbd>
-        <kbd class="key U1-25" data-key="super">Super</kbd>
-        <kbd class="key U1-25" data-key="alt">Alt</kbd>
-        <kbd class="key U6-75" data-key="space">Space</kbd>
-        <kbd class="key U1-25" data-key="alt_r">Alt</kbd>
-        <kbd class="key U1-25" data-key="ctrl_r">Ctrl</kbd>
-        <kbd class="key" data-key="left">Left</kbd>
-        <kbd class="key" data-key="down">Down</kbd>
-        <kbd class="key" data-key="right">Right</kbd>
-        <kbd class="key" data-key="0">0</kbd>
-        <kbd class="key" data-key="insert">Ins</kbd>
-      </div>
+		<script src="script.js"></script>
+	</body>
 
-    </div>
-
-    <script src="script.js"></script>
-  </body>
-
-  </html>
+	</html>
