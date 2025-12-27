@@ -40,12 +40,13 @@ def on_release(key):
 def start_listener():
     global listener, listener_running
     if listener_running:
-        return "already running"
+        print("Listener already running")
+        return "locked"
     listener_running = True
     listener = keyboard.Listener(on_press=on_press, on_release=on_release, suppress=True)
     listener.start()
     print("Listener started")
-    return "started"
+    return "locked"
 
 def stop_listener():
     global listener, listener_running
@@ -54,9 +55,9 @@ def stop_listener():
         pressed_keys.clear()
         listener_running = False
         print("Listener stopped")
-        return "stopped"
-    print("Listener not running")
-    return "not running"
+        return "unlocked"
+    print("Listener was not running")
+    return "unlocked"
 
 def on_starting():
     global escape_keys
