@@ -11,7 +11,7 @@ async function stop() {
 }
 
 function update_listener_status(status_string) {
-  document.getElementById("status").innerText = "is " + status_string;
+  document.getElementById("status").innerText = status_string;
 }
 
 function set_pressed_keys_placeholder(string) {
