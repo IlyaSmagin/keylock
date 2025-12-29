@@ -90,7 +90,7 @@ h1 {
 	background-color: var(--primary);
 }
 
-.dangerButton {
+.lock-active {
 	color: #fff;
 	background-color: var(--danger);
 }

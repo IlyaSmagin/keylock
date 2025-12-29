@@ -39,12 +39,12 @@ def on_release(key):
 
 def start_listener():
     global listener, listener_running
-    if listener_running:
+    if listener_running: #is it better to check listener.running?
         print("Listener already running")
         return "locked"
     listener_running = True
     listener = keyboard.Listener(on_press=on_press, on_release=on_release, suppress=True)
-    listener.start()
+    listener.start() #check if listener started and only then return
     print("Listener started")
     return "locked"
 
@@ -79,7 +79,7 @@ class Api:
         # goes to js and back which is prob not effective or clean
         global window
         if window:
-            window.evaluate_js("stop()")
+            window.evaluate_js("stopLocking()")
 
     def console(self, keys_string):
         print(keys_string)

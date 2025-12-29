@@ -1,13 +1,50 @@
-async function start() {
+async function startLocking() {
   let res = await window.pywebview.api.start();
   update_listener_status(res);
   set_pressed_keys_placeholder("No keys are pressed");
+  return res;
 }
 
-async function stop() {
+async function stopLocking() {
   let res = await window.pywebview.api.stop();
   update_listener_status(res);
   set_pressed_keys_placeholder("Not monitoring key presses");
+  return res;
+}
+let isLocked = false;
+async function toggleLock() {
+  const lockButton = document.getElementById("lockToggle");
+  if (lockButton.disabled) return;
+  lockButton.disabled = true;
+
+  const apiFn = isLocked ? stopLocking : startLocking;
+  const expectedRes = isLocked ? "unlocked" : "locked";
+  const nextButtonText = isLocked ? 'Lock Keyboard' : 'Unlock Keyboard';
+
+  let res;
+  try {
+    res = await apiFn();
+  } catch (error) {
+    console.error('API call failed:', error);
+    await window.pywebview.api.console('API call failed:', error);
+    lockButton.disabled = false;
+    return;
+  }
+  
+  if (res !== expectedRes) {
+    console.error('API state mismatch:', res, 'expected:', expectedRes);
+    await window.pywebview.api.console('API state mismatch:', res, 'expected:', expectedRes);
+    lockButton.disabled = false;
+    return;
+  }
+
+  lockButton.textContent = nextButtonText;
+  lockButton.setAttribute('aria-pressed', !isLocked.toString());
+  lockButton.classList.toggle('lock-active', !isLocked);
+  isLocked = !isLocked;
+  
+  lockButton.disabled = false;
+
 }
 
 function update_listener_status(status_string) {
@@ -48,6 +85,4 @@ function update_key_classes(action, keys_string, class_name) {
   });
 }
 
-
-document.getElementById("startBtn").addEventListener("click", start);
-document.getElementById("stopBtn").addEventListener("click", stop);
+document.getElementById("lockToggle").addEventListener("click", toggleLock);
