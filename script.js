@@ -68,7 +68,26 @@ function update_keys_on_release(keys_string) {
 }
 
 function highlight_escape_keys(keys_string) {
-  update_key_classes("add", keys_string, "key-escape");
+  update_key_classes("add", keys_string.join(" + "), "key-escape");
+  draw_buttons_to(keys_string, "escapeKeySequence", "key-escape");
+}
+
+function draw_buttons_to(keys_array, containerId, keyClassName = "") {
+  const containerNode = document.getElementById(containerId);
+
+  keys_array.forEach((key, i) => {
+    key = CSS.escape(key);
+    const newKey = document.createElement("kbd");
+    newKey.innerText = key;
+    newKey.classList.add(keyClassName);
+    containerNode.appendChild(newKey);
+
+    if(i === keys_array.length - 1) {
+      return
+    }
+
+    newKey.after(" + ")
+  });
 }
 
 function update_key_classes(action, keys_string, class_name) {

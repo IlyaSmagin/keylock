@@ -64,7 +64,7 @@ def stop_listener():
 def on_starting():
     global escape_keys
     print("Window is opening...")
-    api.highlight_escape_keys(stringify_key_array(format_keys(escape_keys)))
+    api.highlight_escape_keys(format_keys(escape_keys))
 
 def on_closing():
     print("Window is closing, stopping listener...")

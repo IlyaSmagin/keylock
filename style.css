@@ -121,10 +121,11 @@ h1 {
 	font-weight: 700;
 }
 
-.keySequence > span {
+.keySequence > kbd {
 	display: inline-flex;
 	align-items: center;
 	padding: 0.25rem 0.5rem;
+	text-transform: capitalize;
 }
 
 #currentlyPressed {
