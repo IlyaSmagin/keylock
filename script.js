@@ -1,18 +1,7 @@
-async function startLocking() {
-  let res = await window.pywebview.api.start();
-  update_listener_status(res);
-  set_pressed_keys_placeholder("No keys are pressed");
-  return res;
-}
-
-async function stopLocking() {
-  let res = await window.pywebview.api.stop();
-  update_listener_status(res);
-  set_pressed_keys_placeholder("Not monitoring key presses");
-  return res;
-}
 let isLocked = false;
+
 async function toggleLock() {
+
   const lockButton = document.getElementById("lockToggle");
   if (lockButton.disabled) return;
   lockButton.disabled = true;
@@ -47,6 +36,20 @@ async function toggleLock() {
 
 }
 
+async function startLocking() {
+  let res = await window.pywebview.api.start();
+  update_listener_status(res);
+  set_pressed_keys_placeholder("No keys are pressed");
+  return res;
+}
+
+async function stopLocking() {
+  let res = await window.pywebview.api.stop();
+  update_listener_status(res);
+  set_pressed_keys_placeholder("Not monitoring key presses");
+  return res;
+}
+
 function update_listener_status(status_string) {
   const status = document.getElementById("status");
   status.innerText = status_string;
@@ -57,19 +60,19 @@ function set_pressed_keys_placeholder(string) {
   document.getElementById("lastPressed").innerText = string;
 }
 
-function update_keys_on_press(keys_string) {
-  set_pressed_keys_placeholder("Last pressed key is " + keys_string);
-  update_key_classes("add", keys_string, "key-active");
+function update_keys_on_press(keys_array) {
+  draw_buttons_to(keys_array, "pressedKeySequence", "key-active");
+  update_key_classes("add", keys_array, "key-active");
 }
 
-function update_keys_on_release(keys_string) {
-  set_pressed_keys_placeholder("Last pressed key is " + keys_string);
-  update_key_classes("remove", keys_string, "key-active");
+function update_keys_on_release(keys_array) {
+  draw_buttons_to(keys_array, "pressedKeySequence", "key-active");
+  update_key_classes("remove", keys_array, "key-active");
 }
 
-function highlight_escape_keys(keys_string) {
-  update_key_classes("add", keys_string.join(" + "), "key-escape");
-  draw_buttons_to(keys_string, "escapeKeySequence", "key-escape");
+function highlight_escape_keys(keys_array) {
+  update_key_classes("add", keys_array, "key-escape");
+  draw_buttons_to(keys_array, "escapeKeySequence", "key-escape");
 }
 
 function draw_buttons_to(keys_array, containerId, keyClassName = "") {
@@ -90,8 +93,8 @@ function draw_buttons_to(keys_array, containerId, keyClassName = "") {
   });
 }
 
-function update_key_classes(action, keys_string, class_name) {
-  keys_string.split(" + ").forEach(key => {
+function update_key_classes(action, keys_array, class_name) {
+  keys_array.forEach(key => {
     key = CSS.escape(key);
     document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`)
       .forEach(triggered_class => {

@@ -29,14 +29,14 @@ def on_press(key):
     pressed_keys.add(key)
     print("You pressed:", stringify_key_array(format_keys(pressed_keys)))
     #as listener stops immediatly after add some delay to display that escape keys were pressed
-    api.update_keys_on_press(stringify_key_array(format_keys(pressed_keys)))
+    api.update_keys_on_press(format_keys(pressed_keys))
     if (escape_keys.issubset(pressed_keys)):
-        api.update_keys_on_release(stringify_key_array(format_keys(pressed_keys)))
+        api.update_keys_on_release(format_keys(pressed_keys))
         api.stop_from_backend()
 
 def on_release(key):
     if key in pressed_keys:
-        api.update_keys_on_release(stringify_key_array(format_keys([key])))
+        api.update_keys_on_release(format_keys([key]))
         pressed_keys.remove(key)
 
 def start_listener():
