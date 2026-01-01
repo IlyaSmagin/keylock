@@ -19,7 +19,7 @@ async function toggleLock() {
     lockButton.disabled = false;
     return;
   }
-  
+
   if (res !== expectedRes) {
     console.error('API state mismatch:', res, 'expected:', expectedRes);
     await window.pywebview.api.console('API state mismatch:', res, 'expected:', expectedRes);
@@ -31,7 +31,7 @@ async function toggleLock() {
   lockButton.setAttribute('aria-pressed', !isLocked.toString());
   lockButton.classList.toggle('lock-active', !isLocked);
   isLocked = !isLocked;
-  
+
   lockButton.disabled = false;
 
 }
@@ -39,7 +39,7 @@ async function toggleLock() {
 async function startLocking() {
   let res = await window.pywebview.api.start();
   update_listener_status(res);
-  set_pressed_keys_placeholder("No keys are pressed");
+  set_pressed_keys_placeholder("Monitoring key presses");
   return res;
 }
 
@@ -66,7 +66,7 @@ function update_keys_on_press(keys_array) {
 }
 
 function update_keys_on_release(keys_array) {
-  draw_buttons_to(keys_array, "pressedKeySequence", "key-active");
+  draw_buttons_to(keys_array, "pressedKeySequence", "key-active");//update_buttons_in or separate function using removeChild()
   update_key_classes("remove", keys_array, "key-active");
 }
 
@@ -77,6 +77,11 @@ function highlight_escape_keys(keys_array) {
 
 function draw_buttons_to(keys_array, containerId, keyClassName = "") {
   const containerNode = document.getElementById(containerId);
+
+//clear container first
+// granually replace difference with removeChild()
+
+  containerNode.replaceChildren();
 
   keys_array.forEach((key, i) => {
     key = CSS.escape(key);
