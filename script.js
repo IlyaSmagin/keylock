@@ -61,40 +61,53 @@ function set_pressed_keys_placeholder(string) {
 }
 
 function update_keys_on_press(keys_array) {
-  draw_buttons_to(keys_array, "pressedKeySequence", "key-active");
+  render_buttons_to(keys_array, "pressedKeySequence", "key-active");
   update_key_classes("add", keys_array, "key-active");
 }
 
-function update_keys_on_release(keys_array) {
-  draw_buttons_to(keys_array, "pressedKeySequence", "key-active");//update_buttons_in or separate function using removeChild()
-  update_key_classes("remove", keys_array, "key-active");
+function update_keys_on_release(released_key, keys_array) {
+  render_buttons_to(keys_array, "pressedKeySequence", "key-active");//update_buttons_in or separate function using removeChild()
+  update_key_classes("remove", released_key, "key-active");
 }
 
 function highlight_escape_keys(keys_array) {
   update_key_classes("add", keys_array, "key-escape");
-  draw_buttons_to(keys_array, "escapeKeySequence", "key-escape");
+  render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
 }
 
-function draw_buttons_to(keys_array, containerId, keyClassName = "") {
+function render_buttons_to(keys_array, containerId, keyClassName = "") {
   const containerNode = document.getElementById(containerId);
-
-//clear container first
-// granually replace difference with removeChild()
-
-  containerNode.replaceChildren();
-
-  keys_array.forEach((key, i) => {
-    key = CSS.escape(key);
-    const newKey = document.createElement("kbd");
-    newKey.innerText = key;
-    newKey.classList.add(keyClassName);
-    containerNode.appendChild(newKey);
-
-    if(i === keys_array.length - 1) {
-      return
+  
+  const currentKbdNodes = Array.from(containerNode.querySelectorAll("kbd"));
+  const currentKeys = currentKbdNodes.map(kbd => kbd.textContent);
+  
+  // Remove keys not in new array (and their "+" if applicable)
+  currentKeys.forEach((key, idx) => {
+    if (!keys_array.includes(key)) {
+      const kbdNode = currentKbdNodes[idx];
+      kbdNode.remove();
+      
+      const nextSibling = kbdNode.nextSibling;
+      if (nextSibling && nextSibling.textContent === " + ") {
+        nextSibling.remove();
+      }
     }
+  });
+  
+  // Append new keys at the end
+  const newKeys = keys_array.filter(key => !currentKeys.includes(key));
+  newKeys.forEach((newKey, i) => {
+    const newKbd = document.createElement("kbd");
 
-    newKey.after(" + ")
+    newKey = CSS.escape(newKey);
+    newKbd.textContent = newKey;
+    newKbd.classList.add(keyClassName);
+    
+    containerNode.appendChild(newKbd);
+    
+    if (keys_array.length > 1 && i < newKeys.length - 1) {
+      containerNode.appendChild(document.createTextNode(" + "));
+    }
   });
 }
 
