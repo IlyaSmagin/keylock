@@ -36,7 +36,8 @@ def on_press(key):
 
 def on_release(key):
     if key in pressed_keys:
-        api.update_keys_on_release(format_keys([key]))
+        released_key = format_keys([key])
+        api.update_keys_on_release(released_key, format_keys(pressed_keys))
         pressed_keys.remove(key)
 
 def start_listener():
@@ -93,11 +94,12 @@ class Api:
             js_arg = json.dumps(keys_string)
             window.evaluate_js(f'update_keys_on_press({js_arg})')
 
-    def update_keys_on_release(self, keys_string):
+    def update_keys_on_release(self, released_key_string, keys_string):
         global window
         if window:
-            js_arg = json.dumps(keys_string)
-            window.evaluate_js(f'update_keys_on_release({js_arg})')
+            js_arg_released = json.dumps(released_key_string)
+            js_arg_keys = json.dumps(keys_string)
+            window.evaluate_js(f'update_keys_on_release({js_arg_released, js_arg_keys})')
 
     def highlight_escape_keys(self, keys_string):
         global window
