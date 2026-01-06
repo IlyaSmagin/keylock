@@ -41,7 +41,10 @@ def on_release(key):
         api.update_keys_on_release(released_key, format_keys(pressed_keys))
         pressed_keys.remove(key)
 
-def start_listener():
+def start_listener(): 
+    #If your application requires toggling listening events, 
+    # you must either add an internal flag to ignore events when not required, 
+    # or create a new listener when resuming listening. https://pynput.readthedocs.io/en/latest/keyboard.html
     global listener, listener_running
     if listener_running: #is it better to check listener.running?
         print("Listener already running")
@@ -107,6 +110,12 @@ class Api:
         if window:
             js_arg = json.dumps(keys_string)
             window.evaluate_js(f'highlight_escape_keys({js_arg})')
+
+    def change_escape_keys(self, string_escape_keys):
+        global escape_keys
+        escape_keys = set(keyboard.HotKey.parse(string_escape_keys))
+        print(escape_keys)#error fix
+        api.highlight_escape_keys(format_keys(escape_keys))
 
 
 if __name__ == "__main__":

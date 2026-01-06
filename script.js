@@ -1,7 +1,7 @@
 let isLocked = false;
-
+// remove global state
 async function toggleLock() {
-
+// calculate isLocked based on button aria-pressed state
   const lockButton = document.getElementById("lockToggle");
   if (lockButton.disabled) return;
   lockButton.disabled = true;
@@ -70,6 +70,42 @@ function update_keys_on_release(released_key, keys_array) {
   update_key_classes("remove", released_key, "key-active");
 }
 
+function toggleEdit() {
+  const editButton = document.getElementById("editEscapeSequence");
+  let isEditing = editButton.textContent === "close";//messy
+  const isLocked = document.getElementById("status").textContent === "locked";
+  
+  if(isLocked) return
+
+  if(!isEditing) {
+    editButton.textContent = "close"
+    editButton.classList.add("key-escape");
+  } else { //remove duplication
+    editButton.textContent = "edit";
+    editButton.classList.remove("key-escape");
+    const keys_array = stringify_key_sequence("escapeKeySequence");
+    document.getElementById("escapeKeySequence").replaceChildren();
+    render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
+  }
+}
+
+async function stringify_key_sequence(containerId) {
+  const containerNode = document.getElementById(containerId);
+  const currentKbdNodes = Array.from(containerNode.querySelectorAll("kbd"));
+  const keysStringArray = currentKbdNodes.map(keyNode => {
+    let formattedKey = keyNode.textContent;
+    if(keyNode.textContent.length > 1) {
+      formattedKey = `<${formattedKey}>`;
+    }
+    return formattedKey;
+  });
+  const keysString = keysStringArray.join("+");
+
+  await window.pywebview.api.console('stringified keys:'+keysString);
+  let ret = await window.pywebview.api.change_escape_keys(keysString);
+  return keysStringArray;
+}
+
 function highlight_escape_keys(keys_array) {
   render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
   update_key_classes("add", keys_array, "key-escape");
@@ -88,7 +124,7 @@ function render_buttons_to(keys_array, containerId, keyClassName = "") {
       kbdNode.remove();
 
       const nextSibling = kbdNode.nextSibling;
-      if (nextSibling && nextSibling.textContent === " + ") {
+      if (nextSibling && nextSibling.textContent === "+") {
         nextSibling.remove();
       }
     }
@@ -104,7 +140,9 @@ function render_buttons_to(keys_array, containerId, keyClassName = "") {
     containerNode.appendChild(newKbd);
 //check why no plused appended
     if (keys_array.length > 1 && i < newKeys.length - 1) {
-      containerNode.appendChild(document.createTextNode(" + "));
+      plusElement = document.createElement("span");
+      plusElement.textContent = "+";
+      containerNode.appendChild(plusElement);
     }
   });
 
@@ -129,3 +167,4 @@ function update_key_classes(action, keys_array, class_name) {
 }
 
 document.getElementById("lockToggle").addEventListener("click", toggleLock);
+document.getElementById("editEscapeSequence").addEventListener("click", toggleEdit);
