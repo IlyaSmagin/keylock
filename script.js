@@ -15,14 +15,14 @@ async function toggleLock() {
     res = await apiFn();
   } catch (error) {
     console.error('API call failed:', error);
-    await window.pywebview.api.console('API call failed:', error);
+    await window.pywebview.api.console('API call failed: '+error);
     lockButton.disabled = false;
     return;
   }
 
   if (res !== expectedRes) {
     console.error('API state mismatch:', res, 'expected:', expectedRes);
-    await window.pywebview.api.console('API state mismatch:', res, 'expected:', expectedRes);
+    await window.pywebview.api.console('API state mismatch: '+res+' expected: '+expectedRes);
     lockButton.disabled = false;
     return;
   }
@@ -71,55 +71,58 @@ function update_keys_on_release(released_key, keys_array) {
 }
 
 function highlight_escape_keys(keys_array) {
-  update_key_classes("add", keys_array, "key-escape");
   render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
+  update_key_classes("add", keys_array, "key-escape");
 }
 
 function render_buttons_to(keys_array, containerId, keyClassName = "") {
   const containerNode = document.getElementById(containerId);
-  
+
   const currentKbdNodes = Array.from(containerNode.querySelectorAll("kbd"));
   const currentKeys = currentKbdNodes.map(kbd => kbd.textContent);
-  
+
   // Remove keys not in new array (and their "+" if applicable)
   currentKeys.forEach((key, idx) => {
     if (!keys_array.includes(key)) {
       const kbdNode = currentKbdNodes[idx];
       kbdNode.remove();
-      
+
       const nextSibling = kbdNode.nextSibling;
       if (nextSibling && nextSibling.textContent === " + ") {
         nextSibling.remove();
       }
     }
   });
-  
+
   // Append new keys at the end
   const newKeys = keys_array.filter(key => !currentKeys.includes(key));
   newKeys.forEach((newKey, i) => {
     const newKbd = document.createElement("kbd");
-
     newKey = CSS.escape(newKey);
     newKbd.textContent = newKey;
     newKbd.classList.add(keyClassName);
-    
     containerNode.appendChild(newKbd);
-    
+//check why no plused appended
     if (keys_array.length > 1 && i < newKeys.length - 1) {
       containerNode.appendChild(document.createTextNode(" + "));
     }
   });
+
 }
 
 function update_key_classes(action, keys_array, class_name) {
   keys_array.forEach(key => {
     key = CSS.escape(key);
-    document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`)
-      .forEach(triggered_class => {
+    const allCorrespondingKeys = document.querySelectorAll(`kbd[data-key='${key}'], kbd[data-alt='${key}']`);// add :scope
+
+      allCorrespondingKeys.forEach(correspondingKey => {
+
         if (action === "add") {
-          triggered_class.classList.add(class_name);
+          correspondingKey.classList.toggle(class_name, true);
         } else if (action === "remove") {
-          triggered_class.classList.remove(class_name);
+          correspondingKey.classList.toggle(class_name, false);
+        } else {
+          correspondingKey.classList.toggle(class_name);
         }
       });
   });

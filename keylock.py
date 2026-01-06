@@ -30,13 +30,14 @@ def on_press(key):
     print("You pressed:", stringify_key_array(format_keys(pressed_keys)))
     #as listener stops immediatly after add some delay to display that escape keys were pressed
     api.update_keys_on_press(format_keys(pressed_keys))
-    if (escape_keys.issubset(pressed_keys)):
-        api.update_keys_on_release(format_keys(pressed_keys))
+    if (escape_keys.issubset(pressed_keys)):#needs real cleanup logic
+        released_key = format_keys({key})
+        api.update_keys_on_release(released_key, format_keys(pressed_keys))
         api.stop_from_backend()
 
 def on_release(key):
     if key in pressed_keys:
-        released_key = format_keys([key])
+        released_key = format_keys({key})
         api.update_keys_on_release(released_key, format_keys(pressed_keys))
         pressed_keys.remove(key)
 
@@ -82,7 +83,7 @@ class Api:
         # goes to js and back which is prob not effective or clean
         global window
         if window:
-            window.evaluate_js("stopLocking()")
+            window.evaluate_js("toggleLock()")
 
     def console(self, keys_string):
         print(keys_string)
@@ -99,7 +100,7 @@ class Api:
         if window:
             js_arg_released = json.dumps(released_key_string)
             js_arg_keys = json.dumps(keys_string)
-            window.evaluate_js(f'update_keys_on_release({js_arg_released, js_arg_keys})')
+            window.evaluate_js(f'update_keys_on_release({js_arg_released}, {js_arg_keys})')
 
     def highlight_escape_keys(self, keys_string):
         global window
