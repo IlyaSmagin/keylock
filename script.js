@@ -101,7 +101,7 @@ async function stringify_key_sequence(containerId) {
   });
   const keysString = keysStringArray.join("+");
 
-  await window.pywebview.api.console('stringified keys:'+keysString);
+  //await window.pywebview.api.console('stringified keys:'+keysString);
   let ret = await window.pywebview.api.change_escape_keys(keysString);
   return keysStringArray;
 }
@@ -139,7 +139,7 @@ function render_buttons_to(keys_array, containerId, keyClassName = "") {
     newKbd.classList.add(keyClassName);
     containerNode.appendChild(newKbd);
 //check why no plused appended
-    if (keys_array.length > 1 && i < newKeys.length - 1) {
+    if ((keys_array.length > 0) && (i < newKeys.length - 1)) {
       plusElement = document.createElement("span");
       plusElement.textContent = "+";
       containerNode.appendChild(plusElement);
