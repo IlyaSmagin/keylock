@@ -75,6 +75,31 @@ def on_closing():
     print("Window is closing, stopping listener...")
     stop_listener()
 
+def parse_with_specials(hotkey_str):
+    
+    parts = hotkey_str.split('+')
+    result = set()
+    
+    for part in parts:
+        part = part.strip()
+        
+        # Special key in <>: try Key attribute lookup
+        if part.startswith('<') and part.endswith('>') and len(part) > 3:
+            special_name = part[1:-1].lower()
+            
+            if hasattr(keyboard.Key, special_name):
+                key_obj = getattr(keyboard.Key, special_name)
+                result.add(key_obj)
+                continue
+        
+        try:
+            parsed = keyboard.HotKey.parse(part)
+            result.update(parsed)
+        except:
+            pass  # Ignore invalid parts
+    
+    return result
+
 class Api:
     def start(self):
         return start_listener()
@@ -113,8 +138,9 @@ class Api:
 
     def change_escape_keys(self, string_escape_keys):
         global escape_keys
-        escape_keys = set(keyboard.HotKey.parse(string_escape_keys))
-        print(escape_keys)#error fix
+        parsed_escape_keys = parse_with_specials(string_escape_keys)
+        #print("Debug: old: ", escape_keys, " parsed: ", parsed_escape_keys)
+        escape_keys = parsed_escape_keys
         api.highlight_escape_keys(format_keys(escape_keys))
 
 
