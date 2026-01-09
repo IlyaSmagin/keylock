@@ -1,14 +1,48 @@
-let isLocked = false;
-// remove global state
+function eventStore(context = window, name = "keyStateStore") {
+  const store = {
+    isLocked: false,
+    isEditing: false,
+    pressedKeySet: [],
+    escapeKeySet: []
+  };
+
+  const backing = { ...store };
+
+  Object.keys(store).forEach(prop => {
+    let ref = `_${prop}`;
+    backing[ref] = store[prop];
+    Object.defineProperty(store, prop, {
+      enumerable: true,
+      configurable: true,
+      get() {
+        return backing[ref];
+      },
+      set(value) {
+        const oldValue = backing[ref];  // Capture previous value
+        backing[ref] = value;
+        context.dispatchEvent(
+          new CustomEvent(`${name}:${prop}`, {
+            detail: { prop, value, oldValue }  // Include both
+          })
+        );
+      }
+    });
+  });
+
+  return store;
+}
+const state = eventStore();
+
 async function toggleLock() {
+  const isLocked = state.isLocked;
 // calculate isLocked based on button aria-pressed state
   const lockButton = document.getElementById("lockToggle");
   if (lockButton.disabled) return;
   lockButton.disabled = true;
 
-  const apiFn = isLocked ? stopLocking : startLocking;
-  const expectedRes = isLocked ? "unlocked" : "locked";
-  const nextButtonText = isLocked ? 'Lock Keyboard' : 'Unlock Keyboard';
+  const apiFn = isLocked ? startLocking : stopLocking;
+  const expectedRes = isLocked ? "locked" : "unlocked" ;
+  const nextButtonText = isLocked ? 'Unlock Keyboard' : 'Lock Keyboard' ;
 
   let res;
   try {
@@ -28,9 +62,8 @@ async function toggleLock() {
   }
 
   lockButton.textContent = nextButtonText;
-  lockButton.setAttribute('aria-pressed', !isLocked.toString());
-  lockButton.classList.toggle('lock-active', !isLocked);
-  isLocked = !isLocked;
+  lockButton.setAttribute('aria-pressed', isLocked.toString());
+  lockButton.classList.toggle('lock-active', isLocked);
 
   lockButton.disabled = false;
 
@@ -72,20 +105,17 @@ function update_keys_on_release(released_key, keys_array) {
 
 function toggleEdit() {
   const editButton = document.getElementById("editEscapeSequence");
-  let isEditing = editButton.textContent === "close";//messy
-  const isLocked = document.getElementById("status").textContent === "locked";
-  
-  if(isLocked) return
+  const isEditing = state.isEditing;
 
-  if(!isEditing) {
+  if(isEditing) {
     editButton.textContent = "close"
     editButton.classList.add("key-escape");
   } else { //remove duplication
     editButton.textContent = "edit";
     editButton.classList.remove("key-escape");
     const keys_array = stringify_key_sequence("escapeKeySequence");
-    document.getElementById("escapeKeySequence").replaceChildren();
-    render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
+    //document.getElementById("escapeKeySequence").replaceChildren();
+    //render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
   }
 }
 
@@ -106,8 +136,9 @@ async function stringify_key_sequence(containerId) {
   return keysStringArray;
 }
 
-function highlight_escape_keys(keys_array) {
+function highlight_escape_keys(keys_array, old_keys_array = []) {
   render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
+  update_key_classes("remove", old_keys_array, "key-escape");
   update_key_classes("add", keys_array, "key-escape");
 }
 
@@ -165,6 +196,28 @@ function update_key_classes(action, keys_array, class_name) {
       });
   });
 }
-
-document.getElementById("lockToggle").addEventListener("click", toggleLock);
-document.getElementById("editEscapeSequence").addEventListener("click", toggleEdit);
+function handleEditing() {
+  if (!state.isLocked) {
+    state.isEditing = !state.isEditing;
+  } else {
+    state.isEditing = false;
+  }
+}
+document.getElementById("lockToggle").addEventListener("click", () => (state.isLocked = !state.isLocked));
+document.getElementById("editEscapeSequence").addEventListener("click", handleEditing);
+window.addEventListener('keyStateStore:isLocked', (e) => {
+  const isLocked = e.detail.value;
+  window.pywebview.api.console('Lock state changed: '+isLocked+" obj: "+e.detail.prop);
+  toggleLock();
+});
+window.addEventListener('keyStateStore:isEditing', (e) => {
+  const isEditing = e.detail.value;
+  window.pywebview.api.console('Editing state changed: '+isEditing+" obj: "+e.detail.prop);
+  toggleEdit();
+});
+window.addEventListener('keyStateStore:escapeKeySequence', (e) => {
+  const escapeKeySequence = e.detail.value;
+  const oldEscapeKeySequence = e.detail.old;
+  window.pywebview.api.console('Escape key sequence changed: '+escapeKeySequence+" old: "+oldEscapeKeySequence);
+  highlight_escape_keys(escapeKeySequence, oldEscapeKeySequence);
+});
