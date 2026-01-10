@@ -105,21 +105,35 @@ function update_keys_on_release(released_key, keys_array) {
 
 function toggleEdit() {
   const editButton = document.getElementById("editEscapeSequence");
+  const keysContainerNode = document.getElementById("escapeKeySequence");
+  const inputContainerNode = document.getElementById("editEscapeSequenceInput")
   const isEditing = state.isEditing;
 
   if(isEditing) {
     editButton.textContent = "close"
     editButton.classList.add("key-escape");
-  } else { //remove duplication
+    const inputField = document.getElementById("editEscapeInput");
+    const keys_array = stringify_key_sequence("escapeKeySequence");
+    keysContainerNode.style.display = "none";
+    inputContainerNode.style.display = "flex";
+    inputField.value = keys_array;
+  } else { //remove duplication editButton.classList.toggle("key-escape", isEditing)
     editButton.textContent = "edit";
     editButton.classList.remove("key-escape");
-    const keys_array = stringify_key_sequence("escapeKeySequence");
+    keysContainerNode.style.display = "flex";
+    inputContainerNode.style.display = "none";
     //document.getElementById("escapeKeySequence").replaceChildren();
     //render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
   }
 }
+async function saveEscapeSequence() {
+    const inputField = document.getElementById("editEscapeInput");
+    const userEscapeMonitorSequence = inputField.value;
+    await window.pywebview.api.change_escape_keys(userEscapeMonitorSequence);//escapekeysequence is changed in py and calls set_escape_keys
+    state.isEditing = false;
+}
 
-async function stringify_key_sequence(containerId) {
+function stringify_key_sequence(containerId) {
   const containerNode = document.getElementById(containerId);
   const currentKbdNodes = Array.from(containerNode.querySelectorAll("kbd"));
   const keysStringArray = currentKbdNodes.map(keyNode => {
@@ -132,51 +146,38 @@ async function stringify_key_sequence(containerId) {
   const keysString = keysStringArray.join("+");
 
   //await window.pywebview.api.console('stringified keys:'+keysString);
-  let ret = await window.pywebview.api.change_escape_keys(keysString);
-  return keysStringArray;
+  //let ret = await window.pywebview.api.change_escape_keys(keysString);
+  return keysString;
 }
-
+function set_escape_keys(keys_array) {
+  state.escapeKeySet = keys_array;
+}
 function highlight_escape_keys(keys_array, old_keys_array = []) {
   render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
   update_key_classes("remove", old_keys_array, "key-escape");
   update_key_classes("add", keys_array, "key-escape");
 }
 
-function render_buttons_to(keys_array, containerId, keyClassName = "") {
+function render_buttons_to(keys_array, containerId, keyClassName = "") { 
   const containerNode = document.getElementById(containerId);
 
-  const currentKbdNodes = Array.from(containerNode.querySelectorAll("kbd"));
-  const currentKeys = currentKbdNodes.map(kbd => kbd.textContent);
+  const newNodes = [];
 
-  // Remove keys not in new array (and their "+" if applicable)
-  currentKeys.forEach((key, idx) => {
-    if (!keys_array.includes(key)) {
-      const kbdNode = currentKbdNodes[idx];
-      kbdNode.remove();
-
-      const nextSibling = kbdNode.nextSibling;
-      if (nextSibling && nextSibling.textContent === "+") {
-        nextSibling.remove();
-      }
-    }
-  });
-
-  // Append new keys at the end
-  const newKeys = keys_array.filter(key => !currentKeys.includes(key));
-  newKeys.forEach((newKey, i) => {
+  keys_array.forEach((key, i) => {
     const newKbd = document.createElement("kbd");
-    newKey = CSS.escape(newKey);
-    newKbd.textContent = newKey;
+    const escapedKey = CSS.escape(key);
+    newKbd.textContent = escapedKey;
     newKbd.classList.add(keyClassName);
-    containerNode.appendChild(newKbd);
-//check why no plused appended
-    if ((keys_array.length > 0) && (i < newKeys.length - 1)) {
-      plusElement = document.createElement("span");
-      plusElement.textContent = "+";
-      containerNode.appendChild(plusElement);
-    }
-  });
+    newNodes.push(newKbd);
 
+    const plusElement = document.createElement("span");
+    plusElement.textContent = "+";
+    newNodes.push(plusElement);
+  });
+  
+  newNodes.pop();
+
+  containerNode.replaceChildren(...newNodes);
 }
 
 function update_key_classes(action, keys_array, class_name) {
@@ -205,19 +206,21 @@ function handleEditing() {
 }
 document.getElementById("lockToggle").addEventListener("click", () => (state.isLocked = !state.isLocked));
 document.getElementById("editEscapeSequence").addEventListener("click", handleEditing);
+document.getElementById("saveEscapeSequence").addEventListener("click", saveEscapeSequence);
+
 window.addEventListener('keyStateStore:isLocked', (e) => {
   const isLocked = e.detail.value;
-  window.pywebview.api.console('Lock state changed: '+isLocked+" obj: "+e.detail.prop);
+  //window.pywebview.api.console('Lock state changed: '+isLocked+" obj: "+e.detail.prop);
   toggleLock();
 });
 window.addEventListener('keyStateStore:isEditing', (e) => {
   const isEditing = e.detail.value;
-  window.pywebview.api.console('Editing state changed: '+isEditing+" obj: "+e.detail.prop);
+  //window.pywebview.api.console('Editing state changed: '+isEditing+" obj: "+e.detail.prop);
   toggleEdit();
 });
-window.addEventListener('keyStateStore:escapeKeySequence', (e) => {
+window.addEventListener('keyStateStore:escapeKeySet', (e) => {
   const escapeKeySequence = e.detail.value;
-  const oldEscapeKeySequence = e.detail.old;
-  window.pywebview.api.console('Escape key sequence changed: '+escapeKeySequence+" old: "+oldEscapeKeySequence);
+  const oldEscapeKeySequence = e.detail.oldValue;
+  //window.pywebview.api.console('Escape key sequence changed: '+escapeKeySequence+" old: "+oldEscapeKeySequence);
   highlight_escape_keys(escapeKeySequence, oldEscapeKeySequence);
 });

@@ -15,7 +15,7 @@
 }
 
 body {
-	font-family: "Courier New", monospace;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	display: flex;
@@ -40,6 +40,27 @@ h1 {
 	font-weight: 700;
 	letter-spacing: 0.05em;
 }
+
+input {
+	/* https://github.com/tailwindlabs/tailwindcss/blob/79711678fac74f61aae17b25ce51b5f6c409bb31/packages/tailwindcss/preflight.css#L239 */
+	font: inherit;
+	font-feature-settings: inherit;
+	font-variation-settings: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+	border-radius: 0;
+	background-color: transparent;
+  	opacity: 1;
+	
+	border: 1px solid var(--border);
+	width: 100%;
+}
+
+*:focus {
+    outline-style: solid;	
+    outline-width: 2px;
+    outline-color: var(--primary);
+  }
 
 .statusContainer {
 	display: flex;
@@ -93,6 +114,7 @@ h1 {
 .lock-active {
 	color: #fff;
 	background-color: var(--danger);
+	outline-color: var(--danger);
 }
 
 .containerHeader {
@@ -111,7 +133,9 @@ h1 {
 	justify-content: center;
 	align-items: center;
 }
-
+#editEscapeSequenceInput {
+	display: none;
+}
 .keySequence {
 	display: flex;
 	gap: 0.5rem;
@@ -168,6 +192,7 @@ h1 {
 }
 
 .key-escape {
+	outline-color: var(--escape-primary);
 	border-color: var(--escape-primary);
 	color: var(--escape-primary);
 	background-color: var(--escape-background);

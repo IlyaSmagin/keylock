@@ -69,7 +69,7 @@ def stop_listener():
 def on_starting():
     global escape_keys
     print("Window is opening...")
-    api.highlight_escape_keys(format_keys(escape_keys))
+    api.set_escape_keys(format_keys(escape_keys))
 
 def on_closing():
     print("Window is closing, stopping listener...")
@@ -130,18 +130,18 @@ class Api:
             js_arg_keys = json.dumps(keys_string)
             window.evaluate_js(f'update_keys_on_release({js_arg_released}, {js_arg_keys})')
 
-    def highlight_escape_keys(self, keys_string):
+    def set_escape_keys(self, keys_string):
         global window
         if window:
             js_arg = json.dumps(keys_string)
-            window.evaluate_js(f'highlight_escape_keys({js_arg})')
+            window.evaluate_js(f'set_escape_keys({js_arg})')
 
     def change_escape_keys(self, string_escape_keys):
         global escape_keys
         parsed_escape_keys = parse_with_specials(string_escape_keys)
         #print("Debug: old: ", escape_keys, " parsed: ", parsed_escape_keys)
         escape_keys = parsed_escape_keys
-        api.highlight_escape_keys(format_keys(escape_keys))
+        api.set_escape_keys(format_keys(escape_keys))
 
 
 if __name__ == "__main__":
