@@ -33,6 +33,24 @@ function eventStore(context = window, name = "keyStateStore") {
 }
 const state = eventStore();
 
+//these functions are called from python backend
+function set_escape_keys(keys_array) {
+  state.escapeKeySet = keys_array;
+}
+function set_isLocked(isLocked) {
+  state.isLocked = isLocked;
+}
+function update_keys_on_press(keys_array) {
+  render_buttons_to(keys_array, "pressedKeySequence", "key-active");
+  update_key_classes("add", keys_array, "key-active");
+}
+
+function update_keys_on_release(released_key, keys_array) {
+  render_buttons_to(keys_array, "pressedKeySequence", "key-active");//update_buttons_in or separate function using removeChild()
+  update_key_classes("remove", released_key, "key-active");
+}
+//end of backend interface (some functions below call python backend via window.pywebview.api. )
+
 async function toggleLock() {
   const isLocked = state.isLocked;
 // calculate isLocked based on button aria-pressed state
@@ -93,16 +111,6 @@ function set_pressed_keys_placeholder(string) {
   document.getElementById("lastPressed").innerText = string;
 }
 
-function update_keys_on_press(keys_array) {
-  render_buttons_to(keys_array, "pressedKeySequence", "key-active");
-  update_key_classes("add", keys_array, "key-active");
-}
-
-function update_keys_on_release(released_key, keys_array) {
-  render_buttons_to(keys_array, "pressedKeySequence", "key-active");//update_buttons_in or separate function using removeChild()
-  update_key_classes("remove", released_key, "key-active");
-}
-
 function toggleEdit() {
   const editButton = document.getElementById("editEscapeSequence");
   const keysContainerNode = document.getElementById("escapeKeySequence");
@@ -149,16 +157,13 @@ function stringify_key_sequence(containerId) {
   //let ret = await window.pywebview.api.change_escape_keys(keysString);
   return keysString;
 }
-function set_escape_keys(keys_array) {
-  state.escapeKeySet = keys_array;
-}
 function highlight_escape_keys(keys_array, old_keys_array = []) {
   render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
   update_key_classes("remove", old_keys_array, "key-escape");
   update_key_classes("add", keys_array, "key-escape");
 }
 
-function render_buttons_to(keys_array, containerId, keyClassName = "") { 
+function render_buttons_to(keys_array, containerId, keyClassName = "") {
   const containerNode = document.getElementById(containerId);
 
   const newNodes = [];
@@ -174,7 +179,7 @@ function render_buttons_to(keys_array, containerId, keyClassName = "") {
     plusElement.textContent = "+";
     newNodes.push(plusElement);
   });
-  
+
   newNodes.pop();
 
   containerNode.replaceChildren(...newNodes);

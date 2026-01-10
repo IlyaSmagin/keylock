@@ -38,12 +38,12 @@ def on_press(key):
 def on_release(key):
     if key in pressed_keys:
         released_key = format_keys({key})
-        api.update_keys_on_release(released_key, format_keys(pressed_keys))
         pressed_keys.remove(key)
+        api.update_keys_on_release(released_key, format_keys(pressed_keys))
 
-def start_listener(): 
-    #If your application requires toggling listening events, 
-    # you must either add an internal flag to ignore events when not required, 
+def start_listener():
+    #If your application requires toggling listening events,
+    # you must either add an internal flag to ignore events when not required,
     # or create a new listener when resuming listening. https://pynput.readthedocs.io/en/latest/keyboard.html
     global listener, listener_running
     if listener_running: #is it better to check listener.running?
@@ -76,28 +76,28 @@ def on_closing():
     stop_listener()
 
 def parse_with_specials(hotkey_str):
-    
+
     parts = hotkey_str.split('+')
     result = set()
-    
+
     for part in parts:
         part = part.strip()
-        
+
         # Special key in <>: try Key attribute lookup
         if part.startswith('<') and part.endswith('>') and len(part) > 3:
             special_name = part[1:-1].lower()
-            
+
             if hasattr(keyboard.Key, special_name):
                 key_obj = getattr(keyboard.Key, special_name)
                 result.add(key_obj)
                 continue
-        
+
         try:
             parsed = keyboard.HotKey.parse(part)
             result.update(parsed)
         except:
             pass  # Ignore invalid parts
-    
+
     return result
 
 class Api:
@@ -111,7 +111,7 @@ class Api:
         # goes to js and back which is prob not effective or clean
         global window
         if window:
-            window.evaluate_js("toggleLock()")
+            window.evaluate_js("set_isLocked(false);")
 
     def console(self, keys_string):
         print(keys_string)
@@ -143,7 +143,7 @@ class Api:
         escape_keys = parsed_escape_keys
         api.set_escape_keys(format_keys(escape_keys))
 
-
+# to comple run pyinstaller --add-data "index.html:." --add-data "style.css:." --add-data "script.js:." keylock.py
 if __name__ == "__main__":
     api = Api()
     html_file = os.path.join(os.path.dirname(__file__), "index.html");
