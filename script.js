@@ -53,14 +53,13 @@ function update_keys_on_release(released_key, keys_array) {
 
 async function toggleLock() {
   const isLocked = state.isLocked;
-// calculate isLocked based on button aria-pressed state
   const lockButton = document.getElementById("lockToggle");
   if (lockButton.disabled) return;
   lockButton.disabled = true;
 
   const apiFn = isLocked ? startLocking : stopLocking;
-  const expectedRes = isLocked ? "locked" : "unlocked" ;
-  const nextButtonText = isLocked ? 'Unlock Keyboard' : 'Lock Keyboard' ;
+  const expectedRes = isLocked ? "locked" : "unlocked";
+  const nextButtonText = isLocked ? 'Unlock Keyboard' : 'Lock Keyboard';
 
   let res;
   try {
@@ -84,7 +83,6 @@ async function toggleLock() {
   lockButton.classList.toggle('lock-active', isLocked);
 
   lockButton.disabled = false;
-
 }
 
 async function startLocking() {
@@ -130,10 +128,9 @@ function toggleEdit() {
     editButton.classList.remove("key-escape");
     keysContainerNode.style.display = "flex";
     inputContainerNode.style.display = "none";
-    //document.getElementById("escapeKeySequence").replaceChildren();
-    //render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
   }
 }
+
 async function saveEscapeSequence() {
     const inputField = document.getElementById("editEscapeInput");
     const userEscapeMonitorSequence = inputField.value;
@@ -154,9 +151,9 @@ function stringify_key_sequence(containerId) {
   const keysString = keysStringArray.join("+");
 
   //await window.pywebview.api.console('stringified keys:'+keysString);
-  //let ret = await window.pywebview.api.change_escape_keys(keysString);
   return keysString;
 }
+
 function highlight_escape_keys(keys_array, old_keys_array = []) {
   render_buttons_to(keys_array, "escapeKeySequence", "key-escape");
   update_key_classes("remove", old_keys_array, "key-escape");
@@ -202,6 +199,7 @@ function update_key_classes(action, keys_array, class_name) {
       });
   });
 }
+
 function handleEditing() {
   if (!state.isLocked) {
     state.isEditing = !state.isEditing;
@@ -209,8 +207,9 @@ function handleEditing() {
     state.isEditing = false;
   }
 }
-document.getElementById("lockToggle").addEventListener("click", () => (state.isLocked = !state.isLocked));
+
 document.getElementById("editEscapeSequence").addEventListener("click", handleEditing);
+document.getElementById("lockToggle").addEventListener("click", () => (state.isLocked = !state.isLocked));
 document.getElementById("saveEscapeSequence").addEventListener("click", saveEscapeSequence);
 
 window.addEventListener('keyStateStore:isLocked', (e) => {

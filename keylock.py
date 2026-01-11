@@ -79,25 +79,20 @@ def parse_with_specials(hotkey_str):
 
     parts = hotkey_str.split('+')
     result = set()
-
     for part in parts:
         part = part.strip()
-
         # Special key in <>: try Key attribute lookup
         if part.startswith('<') and part.endswith('>') and len(part) > 3:
             special_name = part[1:-1].lower()
-
             if hasattr(keyboard.Key, special_name):
                 key_obj = getattr(keyboard.Key, special_name)
                 result.add(key_obj)
                 continue
-
         try:
             parsed = keyboard.HotKey.parse(part)
             result.update(parsed)
         except:
             pass  # Ignore invalid parts
-
     return result
 
 class Api:
@@ -143,7 +138,10 @@ class Api:
         escape_keys = parsed_escape_keys
         api.set_escape_keys(format_keys(escape_keys))
 
-# to comple run pyinstaller --add-data "index.html:." --add-data "style.css:." --add-data "script.js:." keylock.py
+# to comple on linux run:
+# pyinstaller --add-data "index.html:." --add-data "style.css:." --add-data "script.js:." keylock.py
+# to compile on windows try to run:
+# pyinstaller --add-data "index.html:." --add-data "style.css:." --add-data "script.js:." keylock.py --hidden-import pynput.keyboard._win32
 if __name__ == "__main__":
     api = Api()
     html_file = os.path.join(os.path.dirname(__file__), "index.html");
