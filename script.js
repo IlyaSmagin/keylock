@@ -73,6 +73,23 @@ function eventStore(context = window, name) {
 }
 const state = eventStore();
 
+
+// these functions are called to acess backend (colocated for swaping backends)
+const BACKEND = {
+  async start() {
+    return window.pywebview.api.start();
+  },
+  async stop() {
+    return window.pywebview.api.stop();
+  },
+  async change_escape_keys(seq) {
+    return window.pywebview.api.change_escape_keys(seq);
+  },
+  async console(msg) {
+    return window.pywebview.api.console(msg);
+  }
+};
+
 // these functions are called from python backend
 function set_escape_keys(keys_array) {
   state.escapeKeySet = keys_array;
@@ -89,7 +106,7 @@ function update_keys_on_release(released_key, keys_array) {
   render_buttons_to(keys_array, LITERALS.IDS.PRESSED_SEQ, LITERALS.CLASSES.KEY_ACTIVE); // update_buttons_in or separate function using removeChild()
   update_key_classes("remove", released_key, LITERALS.CLASSES.KEY_ACTIVE);
 }
-// end of backend interface (some functions below call python backend via window.pywebview.api.)
+// end of backend interface (some functions below call python backend via BACKEND.)
 
 async function toggleLock() {
   const isLocked = state.isLocked;
@@ -106,14 +123,14 @@ async function toggleLock() {
     res = await apiFn();
   } catch (error) {
     console.error('API call failed:', error);
-    await window.pywebview.api.console('API call failed: ' + error);
+    await BACKEND.console('API call failed: ' + error);
     lockButton.disabled = false;
     return;
   }
 
   if (res !== expectedRes) {
     console.error('API state mismatch:', res, 'expected:', expectedRes);
-    await window.pywebview.api.console('API state mismatch: ' + res + ' expected: ' + expectedRes);
+    await BACKEND.console('API state mismatch: ' + res + ' expected: ' + expectedRes);
     lockButton.disabled = false;
     return;
   }
@@ -126,14 +143,14 @@ async function toggleLock() {
 }
 
 async function startLocking() {
-  let res = await window.pywebview.api.start();
+  let res = await BACKEND.start();
   update_listener_status(res);
   set_pressed_keys_placeholder(LITERALS.STATUS.MONITORING);
   return res;
 }
 
 async function stopLocking() {
-  let res = await window.pywebview.api.stop();
+  let res = await BACKEND.stop();
   update_listener_status(res);
   set_pressed_keys_placeholder(LITERALS.STATUS.NOT_MONITORING);
   return res;
@@ -174,7 +191,7 @@ function toggleEdit() {
 async function saveEscapeSequence() {
   const inputField = document.getElementById(LITERALS.IDS.EDIT_ESCAPE_INPUT);
   const userEscapeMonitorSequence = inputField.value;
-  await window.pywebview.api.change_escape_keys(userEscapeMonitorSequence); // escapekeysequence is changed in py and calls set_escape_keys
+  await BACKEND.change_escape_keys(userEscapeMonitorSequence); // escapekeysequence is changed in py and calls set_escape_keys
   state.isEditing = false;
 }
 
@@ -190,7 +207,7 @@ function stringify_key_sequence(containerId) {
   });
   const keysString = keysStringArray.join(LITERALS.SEPARATORS.PLUS);
 
-  // await window.pywebview.api.console('stringified keys:'+keysString);
+  // await BACKEND.console('stringified keys:'+keysString);
   return keysString;
 }
 
@@ -256,16 +273,16 @@ document.getElementById(LITERALS.IDS.SAVE_ESCAPE_SEQ)
   .addEventListener("click", saveEscapeSequence);
 
 window.addEventListener(`${LITERALS.STATE}:isLocked`, (e) => {
-  // const isLocked = e.detail.value; window.pywebview.api.console('Lock state changed: '+isLocked+" obj: "+e.detail.prop);
+  // const isLocked = e.detail.value; BACKEND.console('Lock state changed: '+isLocked+" obj: "+e.detail.prop);
   toggleLock();
 });
 window.addEventListener(`${LITERALS.STATE}:isEditing`, (e) => {
-  //const isEditing = e.detail.value; window.pywebview.api.console('Editing state changed: '+isEditing+" obj: "+e.detail.prop);
+  //const isEditing = e.detail.value; BACKEND.console('Editing state changed: '+isEditing+" obj: "+e.detail.prop);
   toggleEdit();
 });
 window.addEventListener(`${LITERALS.STATE}:escapeKeySet`, (e) => {
   const escapeKeySequence = e.detail.value;
   const oldEscapeKeySequence = e.detail.oldValue;
-  // window.pywebview.api.console('Escape key sequence changed: '+escapeKeySequence+" old: "+oldEscapeKeySequence);
+  // BACKEND.console('Escape key sequence changed: '+escapeKeySequence+" old: "+oldEscapeKeySequence);
   highlight_escape_keys(escapeKeySequence, oldEscapeKeySequence);
 });
